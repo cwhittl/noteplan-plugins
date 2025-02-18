@@ -1,0 +1,120 @@
+{
+  "COMMENT": "Details on these fields: https://help.noteplan.co/article/67-create-command-bar-plugins",
+  "macOS.minVersion": "10.13.0",
+  "noteplan.minAppVersion": "3.4.0",
+  "plugin.id": "cwhittl.CopyAsHTML",
+  "plugin.name": "📋 Copy As HTML",
+  "plugin.version": "0.1.0",
+  "plugin.lastUpdateInfo": "Initial Release",
+  "plugin.description": "Allow you to copy note content as HTML to paste to other applications",
+  "plugin.author": "cwhittl",
+  "plugin.requiredFiles-EDIT_ME": ["html-plugin-comms.js"],
+  "plugin.requiredFiles-NOTE": "If you want to use HTML windows, remove the '-EDIT_ME' ABOVE",
+  "plugin.dependsOn": [],
+  "plugin.script": "script.js",
+  "plugin.url": "https://github.com/NotePlan/plugins/blob/main/cwhittl.CopyAsHTML/README.md",
+  "plugin.changelog": "https://github.com/NotePlan/plugins/blob/main/cwhittl.CopyAsHTML/CHANGELOG.md",
+  "plugin.commands": [
+    {
+      "note": "================== COMMMANDS ========================"
+    },
+    {
+      "name": "Copy Selected Text As HTML",
+      "description": "Copy Selected Text As HTML",
+      "jsFunction": "contentAsHTML",
+      "alias": [
+        "md2html"
+      ],
+      "arguments": []
+    },
+    {
+      "name": "Copy Note Content As HTML",
+      "description": "Copy Note Content As HTML",
+      "jsFunction": "noteAsHTML",
+      "alias": [
+        "note2html"
+      ],
+      "arguments": []
+    },
+    {
+      "NOTE": "DO NOT EDIT THIS COMMAND/TRIGGER",
+      "name": "Copy As HTML: Version",
+      "description": "Update + Check Version",
+      "jsFunction": "versionCheck"
+    },
+    {
+      "description": "DO NOT EDIT THIS COMMAND/TRIGGER",
+      "name": "onOpen",
+      "jsFunction": "onOpen",
+      "hidden": true
+    },
+    {
+      "description": "DO NOT EDIT THIS COMMAND/TRIGGER",
+      "name": "onEditorWillSave",
+      "jsFunction": "onEditorWillSave",
+      "hidden": true
+    },
+    {
+      "NOTE": "DO NOT EDIT THIS COMMAND/TRIGGER",
+      "name": "onMessageFromHTMLView",
+      "description": "cwhittl.CopyAsHTML: Callback function to receive messages from HTML view",
+      "jsFunction": "onMessageFromHTMLView",
+      "hidden": true
+    },
+    {
+      "NOTE": "DO NOT EDIT THIS COMMAND/TRIGGER",
+      "name": "Copy As HTML: Update Plugin Settings",
+      "description": "Preferences",
+      "jsFunction": "editSettings"
+    }
+  ],
+  "plugin.settings": [
+    {
+      "note": "================== SETTINGS ========================"
+    },
+    {
+      "COMMENT": "Plugin settings documentation: https://help.noteplan.co/article/123-plugin-configuration",
+      "type": "heading",
+      "title": "Copy As HTML Settings"
+    },
+    {
+      "type": "hidden",
+      "key": "pluginID",
+      "default": "cwhittl.CopyAsHTML",
+      "COMMENT": "This is for use by the editSettings helper function. PluginID must match the plugin.id in the top of this file"
+    },
+    {
+      "title": "A string in prefs",
+      "key": "settingsString",
+      "type": "string",
+      "description": "Enter some string and see it change when the plugin is run",
+      "default": "This default setting was set in plugin preferences!"
+    },
+    {
+      "note": "================== DEBUGGING SETTINGS ========================"
+    },
+    {
+      "NOTE": "DO NOT CHANGE THE FOLLOWING SETTINGS; ADD YOUR SETTINGS ABOVE ^^^",
+      "type": "separator"
+    },
+    {
+      "type": "heading",
+      "title": "Debugging"
+    },
+    {
+      "key": "_logLevel",
+      "type": "string",
+      "title": "Log Level",
+      "choices": [
+        "DEBUG",
+        "INFO",
+        "WARN",
+        "ERROR",
+        "none"
+      ],
+      "description": "Set how much logging output will be displayed when executing Copy As HTML commands in NotePlan Plugin Console Logs (NotePlan -> Help -> Plugin Console)\n\n - DEBUG: Show All Logs\n - INFO: Only Show Info, Warnings, and Errors\n - WARN: Only Show Errors or Warnings\n - ERROR: Only Show Errors\n - none: Don't show any logs",
+      "default": "INFO",
+      "required": true
+    }
+  ]
+}
