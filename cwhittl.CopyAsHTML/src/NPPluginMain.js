@@ -57,10 +57,11 @@ export async function contentAsHTML(): Promise<void> {
     const { note } = Editor
     const selectedLinesText = Editor.selectedLinesText.join('\n') || ''
     const body = await getNoteContentAsHTML(selectedLinesText, note)
-    console.log("types: " + Clipboard.types)
-    Clipboard.setStringForType(body, 'public.html')  
+    //console.log("types: " + Clipboard.types)
+    //Clipboard.setStringForType(body, 'public.html')  
     //Clipboard.setDataForType(body, 'public.html')  
-    console.log("result:" + await Clipboard.string)
+    //console.log("result:" + await Clipboard.string)
+    Clipboard.string = body
   } catch (error) {
     logError(pluginJson, JSP(error))
   }

@@ -15,6 +15,7 @@ import { generateCSSFromTheme, RGBColourConvert } from '@helpers/NPThemeToCSS'
 import { isTermInNotelinkOrURI } from '@helpers/paragraph'
 import { RE_EVENT_LINK, RE_SYNC_MARKER, formRegExForUsersOpenTasks } from '@helpers/regex'
 import { getTimeBlockString, isTimeBlockLine } from '@helpers/timeblocks'
+import { log } from 'mathjs'
 
 // ---------------------------------------------------------
 // Constants and Types
@@ -163,25 +164,47 @@ export async function getNoteContentAsHTML(content: string, note: TNote): ?strin
     const converter = new showdown.Converter(converterOptions)
     let body = converter.makeHtml(lines.join(`\n`))
     body = `<style>img { max-width: 100%; max-height: 100%; }</style>${body}` // fix for bug in showdown
-    
+
     const imgTagRegex = /<img src=\"(.*?)\"/g
     const matches = [...body.matchAll(imgTagRegex)]
     const noteDirPath = getFolderFromFilename(note.filename)
-    
-    for (const match of matches) {
-        const imagePath = match[1]
-        try {
-            // Handle both absolute and relative paths
-            const fullPath = `../../../Notes/${noteDirPath}/${decodeURI(imagePath)}`
 
-            const data = await DataStore.loadData(fullPath)
-            if (data) {
-                const base64Data = `data:image/png;base64,${data.toString('base64')}`
-                body = body.replaceAll(imagePath, base64Data)
+    for (const match of matches) {
+      const imagePath = match[1]
+      try {
+        const imagePathForFetch = `file://${imagePath}`
+        logWarn("Attempting to load image", imagePathForFetch)
+        await fetch(imagePathForFetch)
+          .then(response => {
+            if(response) {
+              return response.blob()
+            } else {
+              logWarn("No response", response)
             }
-        } catch (err) {
-            logWarn("Failed to load image", imagePath, err)
-        }
+          })
+          .then(blob => {
+            logWarn("blob", blob)// Do something with the image data
+          })
+        // const response = await fetch(imagePathForFetch)
+        // logWarn("Response", response)
+        // const blob = await response.blob()
+        // const reader = new FileReader()
+        // const base64Data = await new Promise((resolve) => {
+        //   reader.onloadend = () => resolve(reader.result)
+        //   reader.readAsDataURL(blob)
+        // })
+        // body = body.replaceAll(imagePath, base64Data)
+        // Handle both absolute and relative paths
+        // const fullPath = `../../../Notes/${noteDirPath}/${decodeURI(imagePath)}`
+
+        // const data = await DataStore.loadData(fullPath)
+        // if (data) {
+        //     const base64Data = `data:image/png;base64,${data.toString('base64')}`
+        //     body = body.replaceAll(imagePath, base64Data)
+        // }
+      } catch (err) {
+        logError("Failed to load image", err)
+      }
     }
 
     // TODO: Ideally build a frontmatter styler extension (to use above) but for now ...
@@ -231,8 +254,8 @@ export async function getNoteContentAsHTML(content: string, note: TNote): ?strin
     return modifiedLines.join('\n')
 
   } catch (error) {
-      logError('Converting To HTML', error.message)
-    }
+    logError('Converting To HTML', error.message)
+  }
 }
 
 
@@ -1182,11 +1205,11 @@ export function makePluginCommandButton(
   const output = tooltipText
     ? nativeTooltips
       ? `<button class="PCButton" title="${tooltipText}" data-plugin-id="${pluginName}" data-command="${commandName}" data-command-args="${String(
-          commandArgs,
-        )}">${buttonText}</button>`
+        commandArgs,
+      )}">${buttonText}</button>`
       : `<button class="PCButton tooltip" data-tooltip="${tooltipText}" data-plugin-id="${pluginName}" data-command="${commandName}" data-command-args="${String(
-          commandArgs,
-        )}">${buttonText}</button>`
+        commandArgs,
+      )}">${buttonText}</button>`
     : `<button class="PCButton" data-plugin-id="${pluginName}" data-command="${commandName}" data-command-args="${commandArgs}" >${buttonText}</button>`
   return output
 }
